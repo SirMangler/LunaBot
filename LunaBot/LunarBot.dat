@@ -1,0 +1,21 @@
+{
+ "reminders": {},
+ "announcementChannel": "442774379223449600",
+ "customGreeting": {},
+ "prefix": "*",
+ "deleteDelay": 3,
+ "userXP": {},
+ "liveAlert": true,
+ "followAlert": true,
+ "afkMembers": {},
+ "musicChannel": "451783850624942080",
+ "toDo": {
+  "Add new scripts to stream LunaBot": false,
+  "Make list of multi-player games": false,
+  "Look into buisness cards": false,
+  "Update alerts again": false
+ },
+ "lastSubscribed": 1533149166538,
+ "followers": [],
+ "debugMode": false
+}
