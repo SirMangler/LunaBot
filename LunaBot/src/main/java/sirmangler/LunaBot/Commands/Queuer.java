@@ -10,19 +10,10 @@ import sirmangler.LunaBot.discord.LunaBot;
 
 public class Queuer extends Command {
 
-	String[] aliases = new String[] {
+	private String[] aliases = new String[] {
 			"me"
 		};
-	
-	public Queuer(String alias) {
-		super(alias);
-	}
-	
-	public Queuer(String[] alias) {
-		super(alias);
-	}
-
-	
+	private String error = "Unknown arguments. Usage: `me next`";
 	
 	Queue<String> q = new LinkedList<String>();
 	Queue<String> aurora = new LinkedList<String>(); 
@@ -131,6 +122,16 @@ public class Queuer extends Command {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+
+	@Override
+	public String getFailureResponse() {
+		return failure;
 	}
 
 }

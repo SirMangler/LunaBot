@@ -25,7 +25,6 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
-import net.dv8tion.jda.core.events.user.GenericUserPresenceEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import okhttp3.OkHttpClient;
 import sirmangler.LunaBot.AI.AI;
@@ -34,9 +33,11 @@ import sirmangler.LunaBot.Commands.AFK;
 import sirmangler.LunaBot.Commands.Command;
 import sirmangler.LunaBot.Commands.Info;
 import sirmangler.LunaBot.Commands.Queuer;
+import sirmangler.LunaBot.Commands.SetLevel;
 import sirmangler.LunaBot.Commands.ToDo;
 import sirmangler.LunaBot.Commands.customGreeting;
 import sirmangler.LunaBot.Commands.remindMe;
+import sirmangler.LunaBot.twitch.FollowAlert;
 import sirmangler.LunaBot.twitch.IsLive;
 import sirmangler.LunaBot.twitch.TwitchIRC;
 import sirmangler.LunaBot.twitch.TwitchPubSub;
@@ -91,8 +92,14 @@ public class LunaBot extends ListenerAdapter {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					System.out.println(args);
+					
+					if (args.length > 0)
+						debug = args[0].equalsIgnoreCase("debug");
+					else debug = false;
+
 					@SuppressWarnings("unused")
-					LunaBot superStarBot = new LunaBot(debug=false);
+					LunaBot superStarBot = new LunaBot(debug);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -112,29 +119,33 @@ public class LunaBot extends ListenerAdapter {
 			
 			Thread irc = new Thread(new TwitchIRC());
 			Thread pubsub = new Thread(new TwitchPubSub());
+			Thread followalert = new Thread(() -> new FollowAlert());
 			
 			if (!debug) {
 				irc.start();
 				new IsLive();
 				pubsub.start();
+				followalert.start();
+			} else {
+				System.out.print("DEBUG MODE ENABLED");
 			}
-			
+
 			audio = new AudioPlayer();
 			
 			cmds = new Command[] {
-					new AFK(new String[] { "afk", "brb" }), new customGreeting(new String[] { "customgreeting", "cg" }), new Info(new String[] { "commands", "cmd", "help" }), new Queuer("me"), new remindMe(new String[] { "remindme" }), new ToDo("todo") 
+					new AFK(), new customGreeting(), new Info(), new Queuer(), new remindMe(), new ToDo(), new SetLevel() 
 			};
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}	
 	
-	@Override
+/*	@Override
 	public void onGenericUserPresence(final GenericUserPresenceEvent event) {
 		if (event.getUser().getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) {
 			jda.getPresence().setGame(Game.streaming("my thoughts.", "https://www.twitch.tv/kelsilynstar"));
 		}
-	}
+	}*/
 	
 	@Override
 	public void onMessageReactionAdd(final MessageReactionAddEvent event) {
@@ -149,6 +160,10 @@ public class LunaBot extends ListenerAdapter {
 				event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoleById("503740405607694386")).queue();
 			} else if (event.getReactionEmote().getName().equalsIgnoreCase("🔴")) {
 				event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoleById("341283533345652737")).queue();
+			}
+		} else if (event.getMessageId().equalsIgnoreCase("524396799243583492")) {
+			if (event.getReactionEmote().getName().equalsIgnoreCase("switch")) {
+				event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoleById("524396263022657536")).queue();
 			}
 		}
 	}
@@ -166,6 +181,10 @@ public class LunaBot extends ListenerAdapter {
 				event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("503740405607694386")).queue();
 			} else if (event.getReactionEmote().getName().equalsIgnoreCase("red_circle")) {
 				event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("341283533345652737")).queue();
+			}
+		} else if (event.getMessageId().equalsIgnoreCase("524396799243583492")) {
+			if (event.getReactionEmote().getName().equalsIgnoreCase("switch")) {
+				event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("524396263022657536")).queue();
 			}
 		}
 	}
@@ -188,7 +207,8 @@ public class LunaBot extends ListenerAdapter {
 	{
 		String message = event.getMessage().getContentRaw();
 		System.out.println("["+new Date().toString()+"] <"+event.getChannel().getName()+"> "+event.getAuthor().getName()+": "+message);
-		xpLeveller.updateXP(event.getMember(), event.getTextChannel());
+		
+		if (!event.getAuthor().isBot()) xpLeveller.updateXP(event.getMember(), event.getTextChannel());
 		
 		if (message.startsWith(data.prefix)) {
 			
@@ -223,6 +243,12 @@ public class LunaBot extends ListenerAdapter {
 					Commands.queueMusic(message, event, this);
 					break;
 				case "skipsong":
+					Commands.skipMusic(event, this);
+					break;
+				case "play":
+					Commands.queueMusic(message, event, this);
+					break;
+				case "skip":
 					Commands.skipMusic(event, this);
 					break;
 				case "ban": 

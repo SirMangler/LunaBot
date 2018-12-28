@@ -1,6 +1,5 @@
 package sirmangler.LunaBot.Commands;
 
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -11,9 +10,7 @@ import sirmangler.LunaBot.discord.LunaBot;
 public abstract class Command {
 
 	String[] aliases;
-	String description;
-	EmbedBuilder embed;
-	
+	String failure = "An error has occoured. Oh noes.";
 	byte state = -1;
 	
 	Guild guild = null;
@@ -22,7 +19,8 @@ public abstract class Command {
 	Role star = null;
 	Role aurorarole = null;
 	
-	public void init() { 
+	
+	public Command() {
 		if (!LunaBot.debug) {
 			guild = LunaBot.jda.getGuildById("325273265985683457");
 			comets = guild.getRolesByName("The Comets", true).get(0);
@@ -32,30 +30,28 @@ public abstract class Command {
 		}
 	}
 	
-	public Command(String alias) {
-		aliases = new String[] { alias };
-		init();
-	}
-	
-	public Command(String[] alias) {
-		aliases = alias;
-		init();
-	}
-	
 	public abstract boolean execute(MessageReceivedEvent e, String[] args);
 	
 	public abstract boolean noArgs(MessageReceivedEvent e);
 	
+	public abstract String[] getAliases();
+	
+	public abstract String getFailureResponse();
+	
 	public boolean interpret(String message, MessageReceivedEvent e) {
-		for (String name : aliases) {
+		for (String name : getAliases()) {
 			if (message.startsWith(name)) {
 				String arg = message.replaceFirst(name, "").trim();
 				
 				if (arg.isEmpty()) {
-					noArgs(e);
+					if (!noArgs(e)) 
+						delayedDelete(e.getChannel().sendMessage(getFailureResponse()).complete());
+					
 					return true;
 				} else {
-					execute(e, arg.split(" "));
+					if (!execute(e, arg.split(" "))) 
+						delayedDelete(e.getChannel().sendMessage(getFailureResponse()).complete());
+
 					return true;
 				}
 			}

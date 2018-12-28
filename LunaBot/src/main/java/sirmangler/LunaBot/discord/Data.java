@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Data {
@@ -41,7 +42,7 @@ public class Data {
 	HashMap<String, Long> reminders = new HashMap<String, Long>();
 	public List<Integer> followers = new ArrayList<Integer>();
 	public HashMap<String, String> customGreetings = new HashMap<String, String>();
-	public HashMap<String, UserLevel> userXP = new HashMap<String, UserLevel>();
+	public HashMap<String, String> userXP = new HashMap<String, String>();
 	
 	public void addFollower(int user) {
 		followers.add(user);
@@ -64,7 +65,7 @@ public class Data {
 	}
 	
 	public void setUserXP(String id, long xp, int level) {
-		userXP.put(id, new UserLevel(xp, level));
+		userXP.put(id, xp+":"+level);
 		
 		BufferedWriter writer;
 		try {
@@ -561,13 +562,14 @@ public class Data {
 				
 				toDo = tod;
 				
-				JSONObject followerso = fileData.getJSONObject("followers");
+				JSONArray followerso = fileData.getJSONArray("followers");
 				List<Integer> follower = new ArrayList<Integer>(); 
-				followerso.keys().forEachRemaining(key -> {
-					follower.add(Integer.parseInt(key));
+				followerso.forEach(key -> {
+					follower.add(Integer.parseInt((String)key));
 				});
 				
 				followers = follower;
+				
 				musicChannel = fileData.getString("musicChannel");
 				
 				JSONObject customGreeting = fileData.getJSONObject("customGreetings");
@@ -576,6 +578,15 @@ public class Data {
 				customGreeting.keys().forEachRemaining(key -> {
 					greeting.put(key, customGreeting.getString(key));
 				});
+				
+				final JSONObject XPO = fileData.getJSONObject("userXP");
+				
+				HashMap<String, String> xp = new HashMap<String, String>(); 
+				XPO.keys().forEachRemaining(key -> {
+					xp.put(key, XPO.getString(key));
+				});
+				
+				userXP = xp;
 			} catch (Exception e) {
 				e.printStackTrace();
 				createDataFile();

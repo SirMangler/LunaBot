@@ -56,7 +56,7 @@ public class TwitchIRC implements Runnable {
 						if (response != null) {
 							queueMessage(response, "#kelsilynstar");
 						}
-					}
+					}// else if (line.con)
 				}
 				
 			}

@@ -8,20 +8,10 @@ import sirmangler.LunaBot.discord.LunaBot;
 
 public class Info extends Command {
 
-	public Info(String alias) {
-		super(alias);
-		// TODO Auto-generated constructor stub
-	}
-	
-	public Info(String[] alias) {
-		super(alias);
-		// TODO Auto-generated constructor stub
-	}
-
-	String[] aliases = new String[] {
+	private String[] aliases = new String[] {
 			"commands", "cmds", "info"
 	};
-
+	
 	@Override
 	public boolean execute(MessageReceivedEvent e, String[] args) {	
 		return noArgs(e);
@@ -67,5 +57,15 @@ public class Info extends Command {
 			e.getChannel().sendMessage(embed.build()).queue();
 		}
 		return true;
+	}
+
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+
+	@Override
+	public String getFailureResponse() {
+		return failure;
 	}
 }

@@ -7,17 +7,10 @@ import sirmangler.LunaBot.discord.LunaBot;
 
 public class customGreeting extends Command {
 
-	public customGreeting(String[] alias) {
-		super(alias);
-	}
-	
-	public customGreeting(String alias) {
-		super(alias);
-	}
-
-	String[] aliases = new String[] {
+	private String[] aliases = new String[] {
 			"customgreeting", "cg"
 		};
+	private String failure = "Unknown arguments. Usage: 1cg @NerdzillaFTW \"hey yo\"1";
 	
 	EmbedBuilder embed = new EmbedBuilder().setColor(Color.magenta).setTitle("**Custom Greetings**").setDescription("\n```css\n"+LunaBot.data.prefix+"customgreeting | cg"
 			+"\n @User \"[greeting]\" \n   /*Set's a custom greeting*/\n"
@@ -59,6 +52,16 @@ public class customGreeting extends Command {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+
+	@Override
+	public String getFailureResponse() {
+		return failure;
 	}
 
 }

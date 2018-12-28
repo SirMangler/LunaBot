@@ -6,15 +6,7 @@ import sirmangler.LunaBot.discord.LunaBot;
 
 public class AFK extends Command {
 
-	public AFK(String alias) {
-		super(alias);
-	}
-
-	public AFK(String[] alias) {
-		super(alias);
-	}
-	
-	String[] aliases = new String[] {
+	private String[] aliases = new String[] {
 		"afk", "brb"
 	};
 
@@ -57,6 +49,16 @@ public class AFK extends Command {
 		event.getChannel().sendMessage("You're now AFK.").complete();
 		LunaBot.data.putAFKMember(event.getAuthor().getId(), "");
 		return true;
+	}
+
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+
+	@Override
+	public String getFailureResponse() {
+		return failure;
 	}
 
 }

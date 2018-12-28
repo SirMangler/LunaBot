@@ -1,2 +1,19 @@
-java.lang.Exception: test
-	at sirmangler.xxSuperNovaBot.discord.SuperStarBot.main(SuperStarBot.java:97)
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+SLF4J: Failed to load class "org.slf4j.impl.StaticMDCBinder".
+SLF4J: Defaulting to no-operation MDCAdapter implementation.
+SLF4J: See http://www.slf4j.org/codes.html#no_static_mdc_binder for further details.
+[AWT-EventQueue-0] INFO JDA - Login Successful!
+[JDA MainWS-WriteThread] INFO WebSocketClient - Connected to WebSocket
+[JDA MainWS-ReadThread] INFO JDA - Finished Loading!
+[JDA MainWS-WriteThread] WARN WebSocketClient - Got disconnected from WebSocket (Internet?!)...
+[JDA MainWS-WriteThread] WARN WebSocketClient - Attempting to reconnect in 2s
+[JDA MainWS-WriteThread] WARN WebSocketClient - Attempting to reconnect!
+[JDA MainWS-WriteThread] INFO WebSocketClient - Connected to WebSocket
+[JDA MainWS-ReadThread] WARN WebSocketClient - Got disconnected from WebSocket (Internet?!)... Appending session to reconnect queue
+[SessionControllerAdapter-Worker] WARN WebSocketClient - Queue is attempting to reconnect a shard...
+[SessionControllerAdapter-Worker] WARN WebSocketClient - Attempting to reconnect in 2s
+[SessionControllerAdapter-Worker] WARN WebSocketClient - Attempting to reconnect!
+[JDA MainWS-ReadThread] INFO WebSocketClient - Connected to WebSocket
+[JDA MainWS-ReadThread] INFO JDA - Finished (Re)Loading!

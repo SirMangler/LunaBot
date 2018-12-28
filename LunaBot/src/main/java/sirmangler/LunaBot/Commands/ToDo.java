@@ -9,24 +9,18 @@ import sirmangler.LunaBot.discord.LunaBot;
 
 public class ToDo extends Command {
 
-	String[] aliases = new String[] {
+	private String[] aliases = new String[] {
 			"todo"
 		};
 	
-	public ToDo(String alias) {
-		super(alias);
-	}
-	
-	public ToDo(String[] alias) {
-		super(alias);
-	}
+	private String failure = "Unknown arguments. Usage: todo add \"NerdzillaFTW is cute.\"";
 
 	@Override
 	public boolean execute(MessageReceivedEvent event, String[] args) {
 		if (isStaff(event.getMember(), event.getGuild())) {
-			if (args[0].equalsIgnoreCase("add")) {
+			if (args[0].equalsIgnoreCase("add") && args.length > 1) {
 				StringBuilder build = new StringBuilder();
-				for (int i = 2; i < args.length; i++) {
+				for (int i = 1; i < args.length; i++) {
 					build.append(args[i]+" ");
 				}
 
@@ -35,11 +29,13 @@ public class ToDo extends Command {
 				LunaBot.data.addToDo(todo);
 
 				event.getChannel().sendMessage("Added \""+todo+"\" to the list.").complete();
+				return true;
 			} else if (args[0].equalsIgnoreCase("complete")) {
 				try {
-					int item = Integer.parseInt(args[2]);
-					LunaBot.data.completeToDo(item);
+					int item = Integer.parseInt(args[1]);
+					LunaBot.data.completeToDo((item-1));
 					event.getChannel().sendMessage("Completed item "+item).complete();
+					return true;
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 					delayedDelete(event.getChannel().sendMessage("Usage: todo complete [index]").complete());
@@ -47,6 +43,7 @@ public class ToDo extends Command {
 			} else if (args[0].equalsIgnoreCase("clear")) {
 				LunaBot.data.clearToDo();
 				event.getChannel().sendMessage("Cleared your to-do list.").complete();
+				return true;
 			} else if (args[0].equalsIgnoreCase("help")) {
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.green);
@@ -58,11 +55,13 @@ public class ToDo extends Command {
 						+"\n todo remove [index]\n   /*Removes the selected index*/"
 						+"\n todo \n   /*Displays the list.*/```");
 				event.getChannel().sendMessage(embed.build()).complete();
+				return true;
 			} else if (args[0].equalsIgnoreCase("remove")) {
 				try {
-					int item = Integer.parseInt(args[2]);
-					LunaBot.data.removeToDo(item);
+					int item = Integer.parseInt(args[1]);
+					LunaBot.data.removeToDo((item-1));
 					event.getChannel().sendMessage("Removed item "+item+" from your to-do list.").complete();
+					return true;
 				} catch (Exception e) {
 					e.printStackTrace();
 					delayedDelete(event.getChannel().sendMessage("Usage: todo remove [index]").complete());
@@ -83,7 +82,7 @@ public class ToDo extends Command {
 				String line = entry.getKey();
 				boolean completed = entry.getValue();
 
-				list.append(i+". "+line+" "+(completed ? ":ballot_box_with_check:" : ":regional_indicator_x:")+"\n\n");
+				list.append((i+1)+". "+line+" "+(completed ? ":ballot_box_with_check:" : ":regional_indicator_x:")+"\n\n");
 				i++;
 			}
 
@@ -92,8 +91,20 @@ public class ToDo extends Command {
 			embed.setTitle("**To-Do List**");
 			embed.setDescription(list.toString());
 			e.getChannel().sendMessage(embed.build()).complete();
+			
+			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+
+	@Override
+	public String getFailureResponse() {
+		return failure;
 	}
 
 }

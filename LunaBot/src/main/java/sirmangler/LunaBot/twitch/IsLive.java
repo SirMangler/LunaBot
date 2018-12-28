@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.json.JSONObject;
 
 import net.dv8tion.jda.core.EmbedBuilder;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
 import sirmangler.LunaBot.discord.LunaBot;
@@ -13,7 +14,8 @@ import okhttp3.Response;
 
 public class IsLive {
 
-	boolean live;
+	boolean live = false;
+
 	public IsLive() {
 		new Thread(() -> {
 			while (true) {
@@ -30,6 +32,7 @@ public class IsLive {
 	
 	public void check() {
 		Builder builder = new Builder().url("https://api.twitch.tv/kraken/streams/51375532");
+		builder.addHeader("Accept", "application/vnd.twitchtv.v5+json");
 		builder.addHeader("Client-ID", "294fvy3epe78czy1bvi8rilcw5x0ai");
 		Request r = builder.get().build();
 
@@ -37,11 +40,11 @@ public class IsLive {
 			Response resp = LunaBot.okclient.newCall(r).execute();
 			JSONObject obj = new JSONObject(resp.body().string());
 
-			if (obj.isNull("stream")) {
+			if (obj.isNull("stream") || obj.isEmpty()) {
 				live = false;
 				return;
 			} else {			
-				if (live != true) {
+				if (live == false) {
 					JSONObject stream  = obj.getJSONObject("stream");
 					live = true;
 					EmbedBuilder embed = new EmbedBuilder();

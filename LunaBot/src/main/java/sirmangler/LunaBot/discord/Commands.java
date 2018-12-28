@@ -53,18 +53,23 @@ public class Commands {
 	}
 	
 	public static void level(MessageReceivedEvent event) {
-		UserLevel userlevel = LunaBot.data.userXP.get(event.getAuthor().getId());
-		if (userlevel != null) {
-			event.getChannel().sendMessage(event.getMember().getAsMention()+" You are level "+userlevel.level+" with "+userlevel.xp+"XP!").complete();
+		if (LunaBot.data.userXP.containsKey(event.getAuthor().getId())) {
+			String[] data = LunaBot.data.userXP.get(event.getAuthor().getId()).split(":");
+			long xp = Integer.parseInt(data[0]);
+			int level = Integer.parseInt(data[1]);
+			
+			event.getChannel().sendMessage(event.getMember().getAsMention()+" You are level "+level+" with "+xp+"XP!").complete();
 		} else {
 			event.getChannel().sendMessage(event.getMember().getAsMention()+" You are level 0!").complete();
 		}
 	}
 	
 	public static void queueMusic(String message, MessageReceivedEvent event, LunaBot superStarBot) {
-		if (event.getChannel().getId().equals("451785015953588234")) {
+		if (event.getChannel().getId().equalsIgnoreCase("451785015953588234") || event.getChannel().getId().equalsIgnoreCase("270234493124608000")) {
 			String[] args = message.split(" ", 2);
 			LunaBot.audio.loadAndPlay(event.getTextChannel(), args[1]);
+		} else {
+			delayedDelete(event.getTextChannel().sendMessage("Must be used in the music channel! <#451785015953588234>").complete(), superStarBot);
 		}
 	}
 	

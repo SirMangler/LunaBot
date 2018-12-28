@@ -32,7 +32,6 @@ public class AudioPlayer {
 	}
 	
 	public void loadAndPlay(final TextChannel channel, final String trackUrl) {
-		
 		playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
 			@Override
 			public void trackLoaded(AudioTrack track) {
@@ -85,7 +84,12 @@ public class AudioPlayer {
 	
 	private void connectToFirstVoiceChannel(AudioManager audioManager) {
 		if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
-			VoiceChannel c = LunaBot.jda.getVoiceChannelById(LunaBot.data.musicChannel);
+			VoiceChannel c; 
+			
+			if (LunaBot.debug == true) c = LunaBot.jda.getVoiceChannelById(270234493124608001L);
+			else c = LunaBot.jda.getVoiceChannelById(LunaBot.data.musicChannel);
+			
+			
 			audioManager.setSendingHandler(musicManager.getSendHandler());
 			audioManager.openAudioConnection(c);
 		}

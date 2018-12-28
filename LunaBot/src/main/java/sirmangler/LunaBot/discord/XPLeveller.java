@@ -16,11 +16,12 @@ public class XPLeveller {
 		String id = member.getUser().getId();
 		if (times.containsKey(id)) {
 			long prevtime = times.get(id);
-			if (prevtime < (prevtime + 60000)) {
+			if ((prevtime+60000) > Calendar.getInstance().getTimeInMillis()) {
 				return;
 			} else {
-				long xp = LunaBot.data.userXP.get(id).xp;
-				int level = LunaBot.data.userXP.get(id).level;
+				String[] data = LunaBot.data.userXP.get(id).split(":");
+				long xp = Integer.parseInt(data[0]);
+				int level = Integer.parseInt(data[1]);
 				
 				xp += r.nextInt(5) + 5;
 				
@@ -30,7 +31,7 @@ public class XPLeveller {
 					EmbedBuilder e = new EmbedBuilder();
 					e.setColor(1039370);
 					e.setTitle(":arrow_up: LEVEL UP! :arrow_up:");
-					e.setDescription("You've leveled up to level 9!! <:YenDax:436202017334231040>");
+					e.setDescription(member.getAsMention()+" has leveled up to level "+(level+1)+"!! <:YenDax:436202017334231040>");
 					channel.sendMessage(e.build()).complete();
 				} else {
 					LunaBot.data.setUserXP(id, xp, level);
@@ -38,6 +39,9 @@ public class XPLeveller {
 				
 				times.put(id, Calendar.getInstance().getTimeInMillis());
 			}
+		} else {
+			LunaBot.data.setUserXP(id, 10, 1);
+			times.put(id, Calendar.getInstance().getTimeInMillis());
 		}
 	}
 	

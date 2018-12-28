@@ -1,0 +1,16 @@
+{
+ "reminders": {},
+ "announcementChannel": "442774379223449600",
+ "customGreeting": {},
+ "prefix": "?",
+ "deleteDelay": 3,
+ "userXP": {"167445584142139394": "10:1", "299199546796277762": "12:1"},
+ "liveAlert": true,
+ "followAlert": true,
+ "afkMembers": {},
+ "musicChannel": "451783850624942080",
+ "toDo": {},
+ "lastSubscribed": -1,
+ "followers": [],
+ "debugMode": false
+}

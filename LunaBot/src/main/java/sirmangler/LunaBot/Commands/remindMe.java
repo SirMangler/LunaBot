@@ -8,14 +8,9 @@ import sirmangler.LunaBot.discord.LunaBot;
 
 public class remindMe extends Command {
 
-	public remindMe(String[] alias) {
-		super(alias);
-	}
+	private String[] aliases = new String[] { "remindme" };
+	private String failure = "Unknown arguments. Usage: remindme to eat in 5m";
 	
-	public remindMe(String alias) {
-		super(alias);
-	}
-
 	@Override
 	public boolean execute(MessageReceivedEvent event, String[] args) {
 		if (isStaff(event.getMember(), event.getGuild())) {
@@ -108,6 +103,16 @@ public class remindMe extends Command {
 	public boolean noArgs(MessageReceivedEvent e) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+
+	@Override
+	public String getFailureResponse() {
+		return failure;
 	}
 
 }

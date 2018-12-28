@@ -29,7 +29,7 @@ public class FollowAlert {
 		
 		JSONObject object = new JSONObject();
 		object.put("hub.mode", "subscribe");
-		object.put("hub.callback", "LOLPUTMYIPHERE");
+		object.put("hub.callback", "34.217.133.178:57072");
 		object.put("hub.topic", "https://api.twitch.tv/helix/users/follows&to_id=51375532");
 		object.put("lease_seconds", "");
 		RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
