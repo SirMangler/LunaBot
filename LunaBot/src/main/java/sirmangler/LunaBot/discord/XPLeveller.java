@@ -21,6 +21,11 @@ public class XPLeveller {
 				return;
 			} else {
 				String[] data = LunaBot.data.userXP.get(id).split(":");
+				if (data == null) {
+					LunaBot.data.setUserXP(id, r.nextInt(5) + 5, 1);
+					return;
+				}
+				
 				long xp = Integer.parseInt(data[0]);
 				int level = Integer.parseInt(data[1]);
 				

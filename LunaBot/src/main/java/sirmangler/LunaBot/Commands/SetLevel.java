@@ -86,7 +86,6 @@ public class SetLevel extends Command {
 				}
 			}
 
-			StringBuilder b = new StringBuilder();
 			String d = "";
 			for (int i = 0; i < et.size(); i++) {
 				if (i > 9) 
@@ -106,6 +105,43 @@ public class SetLevel extends Command {
 			embed.setTitle("**XP Leaderboard**");
 			embed.setDescription(d.toString());
 			e.getChannel().sendMessage(embed.build()).complete();
+			return true;
+		}  else if (args[0].equalsIgnoreCase("list")) {
+			if (isStaff(e.getMember(), e.getGuild())) {
+				Entry<String, String> tempxp;
+				List<Entry<String, String>> et = new ArrayList<>(LunaBot.data.userXP.entrySet());
+
+				for (int i = 0; i < et.size(); i++) {
+					for (int j = 1; j <(et.size()-i); j++) {
+						long prevxp = Integer.parseInt(et.get(j-1).getValue().split(":")[0]);
+						long currentxp = Integer.parseInt(et.get(j).getValue().split(":")[0]);
+						if (prevxp < currentxp) {
+							tempxp = et.get(j-1);
+							et.set(j-1, et.get(j));
+							et.set(j, tempxp);
+						}
+					}
+				}
+
+				StringBuilder b = new StringBuilder();
+				String d = "";
+				for (int i = 0; i < et.size(); i++) {
+					String username = e.getJDA().getUserById(et.get(i).getKey()).getName();
+
+					String[] xpraw = et.get(i).getValue().split(":");
+					int level = Integer.parseInt(xpraw[1]);
+					long xp = Integer.parseInt(xpraw[0]); 
+
+					d = d+(i+1)+". "+username+"\n **LEVEL "+level+"** *"+xp+"xp*\n\n";
+				}
+
+				EmbedBuilder embed = new EmbedBuilder();
+				embed.setColor(Color.blue);
+				embed.setTitle("**XP LIST**");
+				embed.setDescription(d.toString());
+				e.getChannel().sendMessage(embed.build()).complete();
+				return true;
+			}
 			return true;
 		} else if (args[0].equalsIgnoreCase("help")) {
 			EmbedBuilder embed = new EmbedBuilder();
