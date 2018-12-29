@@ -7,6 +7,7 @@ import java.util.Random;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 public class XPLeveller {
 
@@ -40,7 +41,6 @@ public class XPLeveller {
 				times.put(id, Calendar.getInstance().getTimeInMillis());
 			}
 		} else {
-			LunaBot.data.setUserXP(id, 10, 1);
 			times.put(id, Calendar.getInstance().getTimeInMillis());
 		}
 	}

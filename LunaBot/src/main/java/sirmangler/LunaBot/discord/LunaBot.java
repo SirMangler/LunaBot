@@ -23,6 +23,7 @@ import net.dv8tion.jda.core.entities.Message.MentionType;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -92,8 +93,6 @@ public class LunaBot extends ListenerAdapter {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					System.out.println(args);
-					
 					if (args.length > 0)
 						debug = args[0].equalsIgnoreCase("debug");
 					else debug = false;
@@ -208,10 +207,7 @@ public class LunaBot extends ListenerAdapter {
 		String message = event.getMessage().getContentRaw();
 		System.out.println("["+new Date().toString()+"] <"+event.getChannel().getName()+"> "+event.getAuthor().getName()+": "+message);
 		
-		if (!event.getAuthor().isBot()) xpLeveller.updateXP(event.getMember(), event.getTextChannel());
-		
-		if (message.startsWith(data.prefix)) {
-			
+		if (message.startsWith(data.prefix)) {			
 			for (Command cmd : cmds) {
 				if (cmd.interpret(message.replace(data.prefix, ""), event)) {
 					return;
@@ -253,9 +249,6 @@ public class LunaBot extends ListenerAdapter {
 					break;
 				case "ban": 
 					Commands.ban(message, event, this);
-					break;
-				case "level":
-					Commands.level(event);
 					break;
 			}
 			
@@ -342,7 +335,9 @@ public class LunaBot extends ListenerAdapter {
 			}
 		}
 		
-		if (!event.getAuthor().isBot()) {
+		if (!event.getAuthor().isBot() && !event.getChannel().getId().equalsIgnoreCase("325285012096417802")) {
+			xpLeveller.updateXP(event.getMember(), event.getTextChannel());
+			
 			Iterator<Entry<String, String>> it = data.afkmembers.entrySet().iterator();
 			
 			while (it.hasNext()) {
@@ -352,11 +347,12 @@ public class LunaBot extends ListenerAdapter {
 				
 				Member member = event.getMember();	
 				String name;
-				if (member.getNickname() != null)
-					name = member.getNickname();
-				else name = member.getEffectiveName();
 				
 				if (member.getUser().getId().equals(memberid)) {
+					if (member.getNickname() != null)
+						name = member.getNickname();
+					else name = member.getEffectiveName();
+					
 					if (event.getGuild().getSelfMember().canInteract(event.getMember()))
 						event.getGuild().getController().setNickname(event.getMember(), name.replace("[AFK] ", "")).queue();
 					
@@ -365,7 +361,12 @@ public class LunaBot extends ListenerAdapter {
 					return;
 				}
 
+				member = event.getGuild().getMemberById(memberid);
 				if (event.getMessage().isMentioned(event.getJDA().getUserById(memberid), MentionType.USER)) {
+					if (member.getNickname() != null)
+						name = member.getNickname();
+					else name = member.getEffectiveName();
+					
 					name = name.replaceFirst("[AFK] ", "");
 					if (response == "") {
 						event.getChannel().sendMessage(event.getAuthor().getAsMention()+" "+name+" is AFK currently.").complete();

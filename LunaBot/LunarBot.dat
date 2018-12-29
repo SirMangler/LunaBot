@@ -1,21 +1,19 @@
 {
  "reminders": {},
  "announcementChannel": "442774379223449600",
- "customGreeting": {},
  "prefix": "*",
  "deleteDelay": 3,
- "userXP": {},
+ "userXP": {
+  "167445584142139394": "34:1",
+  "299199546796277762": "13:1"
+ },
  "liveAlert": true,
  "followAlert": true,
+ "customGreetings": {},
  "afkMembers": {},
  "musicChannel": "451783850624942080",
- "toDo": {
-  "Add new scripts to stream LunaBot": false,
-  "Make list of multi-player games": false,
-  "Look into buisness cards": false,
-  "Update alerts again": false
- },
- "lastSubscribed": 1533149166538,
+ "toDo": {},
+ "lastSubscribed": -1,
  "followers": [],
  "debugMode": false
 }

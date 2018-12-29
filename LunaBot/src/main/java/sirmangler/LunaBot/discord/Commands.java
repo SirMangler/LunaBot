@@ -52,18 +52,6 @@ public class Commands {
 		}
 	}
 	
-	public static void level(MessageReceivedEvent event) {
-		if (LunaBot.data.userXP.containsKey(event.getAuthor().getId())) {
-			String[] data = LunaBot.data.userXP.get(event.getAuthor().getId()).split(":");
-			long xp = Integer.parseInt(data[0]);
-			int level = Integer.parseInt(data[1]);
-			
-			event.getChannel().sendMessage(event.getMember().getAsMention()+" You are level "+level+" with "+xp+"XP!").complete();
-		} else {
-			event.getChannel().sendMessage(event.getMember().getAsMention()+" You are level 0!").complete();
-		}
-	}
-	
 	public static void queueMusic(String message, MessageReceivedEvent event, LunaBot superStarBot) {
 		if (event.getChannel().getId().equalsIgnoreCase("451785015953588234") || event.getChannel().getId().equalsIgnoreCase("270234493124608000")) {
 			String[] args = message.split(" ", 2);
@@ -89,8 +77,8 @@ public class Commands {
 		if (event.getMember().hasPermission(Permission.BAN_MEMBERS)) {
 			if (message.equalsIgnoreCase(LunaBot.data.prefix+"ban")) {
 				event.getChannel().sendMessage("I stand ready to bring justice to this land with the pure might of my ban hammer.").complete();
-			} else if (!event.getMessage().getMentionedMembers().isEmpty()) {
-				Member member = event.getMessage().getMentionedMembers().get(0);
+			} else if (!event.getMessage().getMentionedUsers().isEmpty()) {
+				Member member = event.getMessage().getMentionedMembers().iterator().next();
 				
 				String[] split = message.split(" ", 3);
 				
