@@ -4,7 +4,7 @@
 
   <groupId>sirmangler.lunaBot</groupId>
   <artifactId>lunaBot</artifactId>
-  <version>3</version>
+  <version>1</version>
   <packaging>jar</packaging>
 
   <name>LunaBot</name>

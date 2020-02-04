@@ -12,15 +12,25 @@ import io.undertow.server.HttpServerExchange;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
-import sirmangler.LunaBot.discord.LunaBot;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import sirmangler.LunaBot.discord.LunaBot;
 
 public class FollowAlert {
 
-
 	public FollowAlert() {
+		startServer();
 		
+		new Thread(() -> {
+			while (true) {
+				subscribeFollowers();
+				try {
+					Thread.sleep(518400000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	
 	public void subscribeFollowers() {
@@ -29,15 +39,16 @@ public class FollowAlert {
 		
 		JSONObject object = new JSONObject();
 		object.put("hub.mode", "subscribe");
-		object.put("hub.callback", "34.217.133.178:57072");
-		object.put("hub.topic", "https://api.twitch.tv/helix/users/follows&to_id=51375532");
-		object.put("lease_seconds", "");
+		object.put("hub.callback", "http://34.217.133.178:57072/");
+		object.put("hub.topic", "https://api.twitch.tv/helix/users/follows?first=1&to_id=51375532");
+		object.put("lease_seconds", "518400");
 		RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString());
 		
 		Request r = builder.post(body).build();
 		try {
 			Response resp = LunaBot.okclient.newCall(r).execute();
-			JSONObject obj = new JSONObject(resp.body().string());
+			//JSONObject obj = new JSONObject(resp.body().string());
+			//System.out.println(obj.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -51,7 +62,6 @@ public class FollowAlert {
                     public void handleRequest(final HttpServerExchange exchange) throws Exception {
                         if (exchange.getRequestMethod().equalToString("GET")) {
                         	BufferedReader reader = null;
-                        	StringBuilder builder = new StringBuilder();
 
                         	try {
                         	    exchange.startBlocking();
@@ -85,9 +95,15 @@ public class FollowAlert {
                         	}
                         	
                         	JSONObject source = new JSONObject(builder.toString());
-                        	JSONObject data = source.getJSONObject("data");
+                    		JSONObject data;
+                    		try {
+                    			data = source.getJSONObject("data");
+                    		} catch (Exception e) {
+                    			data = source.getJSONArray("data").getJSONObject(0);
+                    		}
+                        	
                         	String from_id = data.getString("from_id");
-                        	if (LunaBot.data.followers.contains(from_id)) {
+                        	if (LunaBot.data.followers.contains(Integer.parseInt(from_id))) {
                         		return;
                         	} else {
                             	LunaBot.jda.getTextChannelById(LunaBot.data.announcementChannel).sendMessage(data.getString("from_name") + "has just followed!").complete();

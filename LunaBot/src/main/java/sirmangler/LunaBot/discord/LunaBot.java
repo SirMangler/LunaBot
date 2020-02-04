@@ -23,7 +23,6 @@ import net.dv8tion.jda.core.entities.Message.MentionType;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -41,7 +40,6 @@ import sirmangler.LunaBot.Commands.remindMe;
 import sirmangler.LunaBot.twitch.FollowAlert;
 import sirmangler.LunaBot.twitch.IsLive;
 import sirmangler.LunaBot.twitch.TwitchIRC;
-import sirmangler.LunaBot.twitch.TwitchPubSub;
 
 public class LunaBot extends ListenerAdapter {
 	
@@ -117,13 +115,11 @@ public class LunaBot extends ListenerAdapter {
 			jda.getPresence().setGame(Game.streaming("my thoughts.", "https://www.twitch.tv/kelsilynstar"));
 			
 			Thread irc = new Thread(new TwitchIRC());
-			Thread pubsub = new Thread(new TwitchPubSub());
 			Thread followalert = new Thread(() -> new FollowAlert());
+			new IsLive();
+			irc.start();
 			
 			if (!debug) {
-				irc.start();
-				new IsLive();
-				pubsub.start();
 				followalert.start();
 			} else {
 				System.out.print("DEBUG MODE ENABLED");
@@ -190,13 +186,17 @@ public class LunaBot extends ListenerAdapter {
 	
 	@Override
 	public void onGuildMemberJoin(final GuildMemberJoinEvent event) {
+		if (event.getMember().getUser().getId().equalsIgnoreCase("234757210100465664")) {
+			return;
+		}
+		
 		event.getGuild().getTextChannelById("325276999947911168").sendMessage("Welcome to Asteroid Belt, "+event.getMember().getAsMention()+"!").complete();	
 		event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoleById(325273929944137728L)).queue();
 	}
 	
 	@Override
 	public void onGuildMemberLeave(final GuildMemberLeaveEvent event) {
-		event.getJDA().getUserById("1761289941760081922").openPrivateChannel().complete().sendMessage(event.getUser().getName()+"#"+event.getUser().getDiscriminator()+" ("+event.getUser().getId()+") has left!").complete();	
+		event.getJDA().getUserById("176128994176008192").openPrivateChannel().complete().sendMessage(event.getUser().getName()+"#"+event.getUser().getDiscriminator()+" ("+event.getUser().getId()+") has left!").complete();	
 	}
 	
 	Command[] cmds;
@@ -249,6 +249,9 @@ public class LunaBot extends ListenerAdapter {
 					break;
 				case "ban": 
 					Commands.ban(message, event, this);
+					break;
+				case "updatelevels": 
+					Commands.updateLevels(event);
 					break;
 			}
 			

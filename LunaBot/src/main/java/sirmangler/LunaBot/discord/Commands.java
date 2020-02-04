@@ -45,6 +45,28 @@ public class Commands {
 
 	public static List<Entry<String, Long>> reminders = new LinkedList<Entry<String, Long>>();
 	
+	public static void updateLevels(MessageReceivedEvent event) {
+		if (event.getAuthor().getId().equalsIgnoreCase("176128994176008192") || event.getAuthor().getId().equalsIgnoreCase("167445584142139394")) {
+			LunaBot.data.userXP.forEach((id, raw) -> {
+				if (raw == null) {
+					LunaBot.data.setUserXP(id, 5, 1);
+					return;
+				}
+				
+				String[] data = raw.split(":");
+				
+				long xp = Integer.parseInt(data[0]);
+				int level = (int) xp / 500;
+				
+				LunaBot.data.setUserXP(id, xp, level);
+				
+				System.out.println("["+id+"] LVL "+level+" ("+xp+")");
+			});
+			
+			event.getChannel().sendMessage("Complete. See console for output.").complete();
+		}
+	}
+	
 	public static void reload(MessageReceivedEvent event, LunaBot superStarBot) {
 		if (event.getAuthor().getId().equalsIgnoreCase("176128994176008192") || event.getAuthor().getId().equalsIgnoreCase("167445584142139394")) {
 			LunaBot.data.loadData();

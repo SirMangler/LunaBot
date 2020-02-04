@@ -13,7 +13,7 @@ public class Queuer extends Command {
 	private String[] aliases = new String[] {
 			"me"
 		};
-	private String error = "Unknown arguments. Usage: `me next`";
+	//private String error = "Unknown arguments. Usage: `me next`";
 	
 	Queue<String> q = new LinkedList<String>();
 	Queue<String> aurora = new LinkedList<String>(); 

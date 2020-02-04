@@ -46,9 +46,10 @@ public class TwitchIRC implements Runnable {
 					writeLine("JOIN #kelsilynstar");
 				}
 
+				//System.out.println(line);
 				if (connected) {
 					if (line.contains("PRIVMSG #kelsilynstar :")) {
-						String message = line.substring(line.indexOf(":", 1)+1);
+						//String message = line.substring(line.indexOf(":", 1)+1);
 						String name = line.substring(1, line.indexOf('!'));
 						
 						//System.out.println(" [:] "+name+": "+message);
@@ -56,7 +57,17 @@ public class TwitchIRC implements Runnable {
 						if (response != null) {
 							queueMessage(response, "#kelsilynstar");
 						}
-					}// else if (line.con)
+					}
+					
+					String response;
+					if ((response = ParseIRCInput.parse(line)) != null) {
+						String s = line.substring(line.indexOf("PRIVMSG"));
+						s = s.substring(s.lastIndexOf(":")+1);
+						
+						if (response.contains("{msg}")) response = response.replace("{msg}", s);
+						
+						LunaBot.jda.getTextChannelById(LunaBot.data.announcementChannel).sendMessage(response).queue();
+					}
 				}
 				
 			}
@@ -73,7 +84,7 @@ public class TwitchIRC implements Runnable {
 	public void writeLine(String line) {
 		try {
 			writer.write(line+"\r\n");
-			System.out.println(" < "+line);
+			//System.out.println(" < "+line);
 			writer.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

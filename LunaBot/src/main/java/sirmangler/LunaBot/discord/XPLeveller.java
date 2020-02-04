@@ -20,17 +20,19 @@ public class XPLeveller {
 			if ((prevtime+60000) > Calendar.getInstance().getTimeInMillis()) {
 				return;
 			} else {
-				String[] data = LunaBot.data.userXP.get(id).split(":");
-				if (data == null) {
+				String raw = LunaBot.data.userXP.get(id); 
+				if (raw == null) {
 					LunaBot.data.setUserXP(id, r.nextInt(5) + 5, 1);
 					return;
 				}
+				
+				String[] data = raw.split(":");
+				
 				
 				long xp = Integer.parseInt(data[0]);
 				int level = Integer.parseInt(data[1]);
 				
 				xp += r.nextInt(5) + 5;
-				
 				if (milestone(xp, level)) {
 					LunaBot.data.setUserXP(id, xp, level+1);
 					
@@ -52,7 +54,7 @@ public class XPLeveller {
 	
 	
 	public boolean milestone(long xp, int level) {
-		if (xp > 125*level) {
+		if (xp > 500*level) {
 			return true;
 		}
 		

@@ -19,7 +19,6 @@ public abstract class Command {
 	Role star = null;
 	Role aurorarole = null;
 	
-	
 	public Command() {
 		if (!LunaBot.debug) {
 			guild = LunaBot.jda.getGuildById("325273265985683457");
